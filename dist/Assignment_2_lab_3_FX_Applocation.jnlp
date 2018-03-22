@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="Assignment_2_lab_3_FX_Applocation.jnlp">
+  <information>
+    <title>Assignment_2_lab_3_FX_Applocation</title>
+    <vendor>ektasharma</vendor>
+    <description>null</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="Assignment_2_lab_3_FX_Applocation.jar" size="19721" download="eager" />
+  </resources>
+  <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="Assignment_2_lab_3_FX_Applocation" >
+    <param name="requiredFXVersion" value="8.0+"/>
+  </applet-desc>
+  <jfx:javafx-desc  width="800" height="600" main-class="assignment_2_lab_3_fx_applocation.Assignment_2_lab_3_FX_Applocation"  name="Assignment_2_lab_3_FX_Applocation" />
+  <update check="always"/>
+</jnlp>
