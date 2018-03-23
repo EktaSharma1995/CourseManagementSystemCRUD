@@ -79,7 +79,11 @@ public class Assignment_2_lab_3_FX_Applocation extends Application {
 
         pane.setCenter(mainPane);
         pane.setBottom(vbox);
-
+        
+        /**
+         * add,find, update, exit buttons
+         */
+        
         addBtn.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -107,7 +111,7 @@ public class Assignment_2_lab_3_FX_Applocation extends Application {
                     Course courseData = new Course(recordNumber, txtTitle.getText(),
                             Integer.parseInt(txtCredit.getText()), Double.parseDouble(txtFee.getText()));
 
-                    courseDbObj.writeCourseToFile(courseData, recordNumber);
+                    courseDbObj.writeCourseToFile(courseData);
 
                     txtCourseNo.setText("");
                     txtTitle.setText("");
@@ -125,7 +129,10 @@ public class Assignment_2_lab_3_FX_Applocation extends Application {
                 }
             }
         });
-
+        
+        /**
+         * find course on the basis of course number
+         */
         findBtn.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -135,10 +142,10 @@ public class Assignment_2_lab_3_FX_Applocation extends Application {
                     int recordNo = Integer.parseInt(txtCourseNo.getText());
                     Course course = courseDB.readCourseFromFile(recordNo);
 
-                    txtCourseNo.setText(Integer.toString(course.getCourseNumber()));
+                    txtCourseNo.setText(String.valueOf(course.getCourseNumber()));
                     txtTitle.setText(course.getTitle());
-                    txtCredit.setText(Integer.toString(course.getCredits()));
-                    txtFee.setText(Double.toString(course.getFee()));
+                    txtCredit.setText(String.valueOf(course.getCredits()));
+                    txtFee.setText(String.valueOf(course.getFee()));
                 } catch (IOException ioex) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setContentText(ioex.getMessage());
@@ -155,6 +162,9 @@ public class Assignment_2_lab_3_FX_Applocation extends Application {
             }
         });
 
+        /**
+         * update course
+         */
         updateBtn.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -192,7 +202,10 @@ public class Assignment_2_lab_3_FX_Applocation extends Application {
                 System.exit(0);
             }
         });
-
+        
+        /**
+         * Navigation 
+         */
         firstBtn.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -202,10 +215,10 @@ public class Assignment_2_lab_3_FX_Applocation extends Application {
 
                     Course course = courseDbObj.readFirstCourseFromFile();
 
-                    txtCourseNo.setText(Integer.toString(course.getCourseNumber()));
+                    txtCourseNo.setText(String.valueOf(course.getCourseNumber()));
                     txtTitle.setText(course.getTitle());
-                    txtCredit.setText(Integer.toString(course.getCredits()));
-                    txtFee.setText(Double.toString(course.getFee()));
+                    txtCredit.setText(String.valueOf(course.getCredits()));
+                    txtFee.setText(String.valueOf(course.getFee()));
                 } catch (IOException ioex) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setContentText(ioex.getMessage());
@@ -227,15 +240,20 @@ public class Assignment_2_lab_3_FX_Applocation extends Application {
             @Override
             public void handle(ActionEvent event) {
                 try {
+                    
+                    if (txtCourseNo.getText().equals("")){
+                            throw new Exception("Course number is not provided");
+                        }
+
                     CourseDB courseDbObj = new CourseDB();
 
                     int recordNumber = Integer.parseInt(txtCourseNo.getText());
                     Course course = courseDbObj.readPreviousCourseFromFile(recordNumber);
 
-                    txtCourseNo.setText(Integer.toString(course.getCourseNumber()));
+                    txtCourseNo.setText(String.valueOf(course.getCourseNumber()));
                     txtTitle.setText(course.getTitle());
-                    txtCredit.setText(Integer.toString(course.getCredits()));
-                    txtFee.setText(Double.toString(course.getFee()));
+                    txtCredit.setText(String.valueOf(course.getCredits()));
+                    txtFee.setText(String.valueOf(course.getFee()));
                 } catch (IOException ioex) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setContentText(ioex.getMessage());
@@ -257,15 +275,19 @@ public class Assignment_2_lab_3_FX_Applocation extends Application {
             @Override
             public void handle(ActionEvent event) {
                 try {
+                    
+                    if (txtCourseNo.getText().equals("")){
+                            throw new Exception("Course number is not provided");
+                        }
                     CourseDB courseDbObj = new CourseDB();
 
                     int recordNumber = Integer.parseInt(txtCourseNo.getText());
                     Course course = courseDbObj.readNextCourseFromFile(recordNumber);
 
-                    txtCourseNo.setText(Integer.toString(course.getCourseNumber()));
+                    txtCourseNo.setText(String.valueOf(course.getCourseNumber()));
                     txtTitle.setText(course.getTitle());
-                    txtCredit.setText(Integer.toString(course.getCredits()));
-                    txtFee.setText(Double.toString(course.getFee()));
+                    txtCredit.setText(String.valueOf(course.getCredits()));
+                    txtFee.setText(String.valueOf(course.getFee()));
                 } catch (IOException ioex) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setContentText(ioex.getMessage());
@@ -292,10 +314,10 @@ public class Assignment_2_lab_3_FX_Applocation extends Application {
 
                     Course course = courseDbObj.readLastCourseFromFile();
 
-                    txtCourseNo.setText(Integer.toString(course.getCourseNumber()));
+                    txtCourseNo.setText(String.valueOf(course.getCourseNumber()));
                     txtTitle.setText(course.getTitle());
-                    txtCredit.setText(Integer.toString(course.getCredits()));
-                    txtFee.setText(Double.toString(course.getFee()));
+                    txtCredit.setText(String.valueOf(course.getCredits()));
+                    txtFee.setText(String.valueOf(course.getFee()));
                 } catch (IOException ioex) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setContentText(ioex.getMessage());

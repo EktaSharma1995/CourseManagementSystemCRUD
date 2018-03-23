@@ -5,9 +5,7 @@
  */
 package assignment_2_lab_3_fx_applocation;
 
-import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import javafx.scene.control.Alert;
@@ -18,13 +16,20 @@ import javafx.scene.control.Alert;
  */
 public class CourseDB {
 
-    private static String fileName = "Course.txt";
-    public static final int RECORDSIZE = 72;
+    private static String fileName = "Course.dat";
+    public static final int RECORDSIZE = 76;
 
-    public static void writeCourseToFile(Course rec, int recordNo) throws Exception {
+    /**
+     * add Course 
+     * @param rec
+     * @throws Exception 
+     */
+    public static void writeCourseToFile(Course rec) throws Exception {
         try {
             RandomAccessFile outFile = new RandomAccessFile(fileName, "rw");
-            outFile.seek(RECORDSIZE * (recordNo - 1));
+            int numberOfRecords = (int) outFile.length() / RECORDSIZE;
+
+            outFile.seek(RECORDSIZE * numberOfRecords);
 
             Utilities.writeFixedLengthString(rec.getTitle(), 30, outFile);
             outFile.writeInt(rec.getCredits());
@@ -43,27 +48,44 @@ public class CourseDB {
             msg.setContentText(ioex.getMessage());
             msg.setHeaderText("Error Box");
             msg.showAndWait();
+        } catch (ArithmeticException ae) {
+            Alert msg = new Alert(Alert.AlertType.ERROR);
+            msg.setContentText(ae.getMessage());
+            msg.setHeaderText("Error Box");
+            msg.showAndWait();
         }
     }
 
+    /**
+     * find course
+     * @param recordNumber
+     * @return
+     * @throws Exception 
+     */
     public Course readCourseFromFile(int recordNumber) throws Exception {
         try {
 
             RandomAccessFile readFromFile = new RandomAccessFile(fileName, "r");
-            int numberOfRecords = (int) readFromFile.length() / RECORDSIZE;
-            if ((recordNumber - 1) <= numberOfRecords) {
-                readFromFile.seek(RECORDSIZE * (recordNumber - 1));
+            int numberOfRecords = (int) readFromFile.length() / RECORDSIZE;        
+            
+            int current = 0;
+            Course course = null;
+            
+            while (current < readFromFile.length()) {
+                readFromFile.seek(current);
                 String title = Utilities.readFixedLengthString(30, readFromFile);
                 int credits = readFromFile.readInt();
                 double fee = readFromFile.readDouble();
+                int courseNum = readFromFile.readInt();
 
-                Course course = new Course(recordNumber, title, credits, fee);
+                current += RECORDSIZE;
 
-                return course;
-
-            } else {
-                throw new IllegalArgumentException("Course number is not valid");
+                if (recordNumber == courseNum) {
+                   course = new Course(courseNum, title, credits, fee);
+                   break;
+                } 
             }
+            return course;
         } catch (IllegalArgumentException Iex) {
             Alert msg = new Alert(Alert.AlertType.ERROR);
             msg.setContentText(Iex.getMessage());
@@ -80,6 +102,11 @@ public class CourseDB {
         return null;
     }
 
+    /**
+     * update course
+     * @param course
+     * @param numberOfRecords 
+     */
     public void updateToFileAsFixedLength(Course course, int numberOfRecords) {
         try {
             RandomAccessFile readWriteFile = new RandomAccessFile(fileName, "rw");
@@ -106,6 +133,12 @@ public class CourseDB {
         }
     }
 
+    /**
+     * read next course
+     * @param recordNo
+     * @return
+     * @throws Exception 
+     */
     public static Course readNextCourseFromFile(int recordNo) throws Exception {
         try {
 
@@ -117,7 +150,7 @@ public class CourseDB {
                 String title = Utilities.readFixedLengthString(30, readNextFromFile);
                 int credits = readNextFromFile.readInt();
                 double fee = readNextFromFile.readDouble();
-                int courseNumber = recordNo + 1;
+                int courseNumber = readNextFromFile.readInt();
 
                 Course course = new Course(courseNumber, title, credits, fee);
 
@@ -142,7 +175,13 @@ public class CourseDB {
         return null;
 
     }
-
+    
+    /**
+     * read previous course
+     * @param recordNo
+     * @return
+     * @throws Exception 
+     */
     public static Course readPreviousCourseFromFile(int recordNo) throws Exception {
         try {
 
@@ -156,18 +195,18 @@ public class CourseDB {
                 String title = Utilities.readFixedLengthString(30, readPreviousFromFile);
                 int credits = readPreviousFromFile.readInt();
                 double fee = readPreviousFromFile.readDouble();
-                int courseNumber = recordNo;
+                int courseNumber = readPreviousFromFile.readInt();;
 
                 Course course = new Course(courseNumber, title, credits, fee);
 
                 return course;
 
             } else {
-                throw new IllegalArgumentException("This is the first record");
+                throw new IOException("This is the first record");
             }
-        } catch (IllegalArgumentException Iex) {
+        } catch (IOException Iex) {
             Alert msg = new Alert(Alert.AlertType.ERROR);
-            msg.setContentText(Iex.getMessage());
+            msg.setContentText("This is the first record");
             msg.setHeaderText("Error Box");
             msg.showAndWait();
 
@@ -181,16 +220,21 @@ public class CourseDB {
         return null;
 
     }
-
+    
+    /**
+     * read first course
+     * @return
+     * @throws Exception 
+     */
     public static Course readFirstCourseFromFile() throws Exception {
         try {
 
             RandomAccessFile readFirstFromFile = new RandomAccessFile(fileName, "r");
-            int numberOfRecords = (int) readFirstFromFile.length() / RECORDSIZE;
 
             readFirstFromFile.seek(0);
 
             String title = Utilities.readFixedLengthString(30, readFirstFromFile);
+
             int credits = readFirstFromFile.readInt();
             double fee = readFirstFromFile.readDouble();
             int courseNumber = readFirstFromFile.readInt();
@@ -209,7 +253,12 @@ public class CourseDB {
         return null;
 
     }
-
+    
+    /**
+     * read last course
+     * @return
+     * @throws Exception 
+     */
     public static Course readLastCourseFromFile() throws Exception {
         try {
 
@@ -221,7 +270,7 @@ public class CourseDB {
             String title = Utilities.readFixedLengthString(30, readLastFromFile);
             int credits = readLastFromFile.readInt();
             double fee = readLastFromFile.readDouble();
-            int courseNumber = numberOfRecords;
+            int courseNumber = readLastFromFile.readInt();
 
             Course course = new Course(courseNumber, title, credits, fee);
 
